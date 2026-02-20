@@ -72,10 +72,10 @@ mkdir -p "$ROOT_BEIDUNINSTALL_DIR"
 #copy all files that should be part of the installer:
 
 #copy licenses
-cp -R ./resources/* $BEIDUNINSTALL_RESOURCES_DIR
+cp -R ./resources/* "$BEIDUNINSTALL_RESOURCES_DIR"
 
 #overwrite the readme files
-cp -R ./uninstall_resources/* $BEIDUNINSTALL_RESOURCES_DIR
+cp -R ./uninstall_resources/* "$BEIDUNINSTALL_RESOURCES_DIR"
 
 #copy uninstall scripts
 cp -R ./uninstall_scripts/* "$BEIDUNINSTALL_SCRIPTS_DIR"
@@ -87,20 +87,20 @@ echo "********** generate $PKG_NAME and $DMG_NAME **********"
 
 
 #build the packages in the release dir
-pushd $RELEASE_BEIDUNINSTALL_DIR
+pushd "$RELEASE_BEIDUNINSTALL_DIR"
 
-pkgbuild --root "$ROOT_BEIDUNINSTALL_DIR" --scripts "$BEIDUNINSTALL_SCRIPTS_DIR" --identifier be.eid.uninstall --version $REL_VERSION --install-location / BEIDUninstall.pkg
+pkgbuild --root "$ROOT_BEIDUNINSTALL_DIR" --scripts "$BEIDUNINSTALL_SCRIPTS_DIR" --identifier be.eid.uninstall --version "$REL_VERSION" --install-location / BEIDUninstall.pkg
 
 productbuild --distribution "$RELEASE_BEIDUNINSTALL_DIR/Distribution_Uninstall.txt" --resources "$BEIDUNINSTALL_RESOURCES_DIR" $PKG_NAME
 
 #####################################################################
 
-if [ $SIGN_BUILD -eq 1 ];then
+if [ "$SIGN_BUILD" -eq 1 ];then
   productsign --sign "Developer ID Installer" $PKG_NAME $PKGSIGNED_NAME
-  hdiutil create -srcfolder $PKGSIGNED_NAME -volname "${VOL_NAME}" $DMG_NAME
+  hdiutil create -srcfolder $PKGSIGNED_NAME -volname "${VOL_NAME}" "$DMG_NAME"
   exit 1
 else
-  hdiutil create -srcfolder $PKG_NAME -volname "${VOL_NAME}" $DMG_NAME
+  hdiutil create -srcfolder $PKG_NAME -volname "${VOL_NAME}" "$DMG_NAME"
 fi
 
 

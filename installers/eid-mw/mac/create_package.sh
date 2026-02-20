@@ -129,16 +129,16 @@ Mkdir -p "$MOZ_STORAGE_MANIFEST_DIR"
 #the other binaries should already been signed when archiving in xcode
 if [ "$EIDMW_BUILD_CONFIG" = "Export" ]
 then
-	codesign --timestamp --force -o runtime --sign "Developer ID Application" -v ../../../release/libbeidpkcs11.$REL_VERSION.dylib
-	cp ../../../release/libbeidpkcs11.$REL_VERSION.dylib "$PKCS11_INST_DIR"
+	codesign --timestamp --force -o runtime --sign "Developer ID Application" -v ../../../release/libbeidpkcs11."$REL_VERSION".dylib
+	cp ../../../release/libbeidpkcs11."$REL_VERSION".dylib "$PKCS11_INST_DIR"
 else
-	cp $PKCS11_DYLIB_PATH "$PKCS11_INST_DIR"
+	cp "$PKCS11_DYLIB_PATH" "$PKCS11_INST_DIR"
 fi
 #copy pkcs11 bundle
 cp -R ./Packages/beid-pkcs11.bundle "$PKCS11_INST_DIR"
 #make relative symbolic link from bundle to the dylib
 mkdir -p "$PKCS11_INST_DIR/beid-pkcs11.bundle/Contents/MacOS/"
-ln -s ../../../libbeidpkcs11.$REL_VERSION.dylib "$PKCS11_INST_DIR/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.dylib"
+ln -s ../../../libbeidpkcs11."$REL_VERSION".dylib "$PKCS11_INST_DIR/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.dylib"
 
 # Create PKCS#11 manifest file for Mozilla
 cat > "$MOZ_PKCS11_MANIFEST_DIR/beidpkcs11.json" <<EOF
@@ -190,7 +190,7 @@ cp ../../../doc/licenses/French/eID-toolkit_licensingtermsconditions.txt \
 cp ../../../doc/licenses/German/eID-toolkit_licensingtermsconditions.txt \
 	"$LICENSES_DIR/license_DE.txt" ; \
 
-cp -R ./resources/* $RESOURCES_DIR
+cp -R ./resources/* "$RESOURCES_DIR"
 
 cp "$(pwd)/../../../scripts/mac/set_eidmw_version.sh" "$INSTALL_SCRIPTS_DIR"
 cp -R ./install_scripts/* "$INSTALL_SCRIPTS_DIR"
@@ -232,18 +232,18 @@ cp -R "$BEIDTOKEN_PATH"  "$BEIDTOKEN_INST_DIR"/BEIDToken.app
 echo "********** building packages **********"
 
 #build the packages in the RELEASE_DIR
-pushd $RELEASE_DIR
+pushd "$RELEASE_DIR"
 
 if [ "$EIDMW_BUILD_CONFIG" = "Export" ]
 then
   EIDMW_CODESIGN_IDENTITY_APP="${EIDMW_CODESIGN_IDENTITY_APP:-Developer ID Application}"
   EIDMW_CODESIGN_IDENTITY_INST="${EIDMW_CODESIGN_IDENTITY_INST:-Developer ID Installer}"
   echo "********** building and signing beidbuild.pkg **********"
-  pkgbuild --root "$ROOT_DIR" --scripts "$INSTALL_SCRIPTS_DIR" --identifier be.eid.middleware --version $REL_VERSION --install-location / beidbuild-unsigned.pkg
+  pkgbuild --root "$ROOT_DIR" --scripts "$INSTALL_SCRIPTS_DIR" --identifier be.eid.middleware --version "$REL_VERSION" --install-location / beidbuild-unsigned.pkg
   productsign --timestamp --sign "$EIDMW_CODESIGN_IDENTITY_INST" "beidbuild-unsigned.pkg" "beidbuild.pkg"
 
   echo "********** building and signing BEIDToken.pkg **********"
-  pkgbuild --root "$ROOT_BEIDTOKEN_DIR" --scripts "$BEIDTOKEN_INSTALL_SCRIPTS_DIR" --component-plist "$BEIDTOKEN_PLIST_PATH" --identifier be.eid.BEIDtoken.app --version $REL_VERSION --install-location / BEIDToken-unsigned.pkg
+  pkgbuild --root "$ROOT_BEIDTOKEN_DIR" --scripts "$BEIDTOKEN_INSTALL_SCRIPTS_DIR" --component-plist "$BEIDTOKEN_PLIST_PATH" --identifier be.eid.BEIDtoken.app --version "$REL_VERSION" --install-location / BEIDToken-unsigned.pkg
   productsign --timestamp --sign "$EIDMW_CODESIGN_IDENTITY_INST" "BEIDToken-unsigned.pkg" "BEIDToken.pkg"
 
   echo "********** building $PKG_NAME **********"
@@ -256,10 +256,10 @@ then
 
   echo "********** signing the package with $EIDMW_CODESIGN_IDENTITY_INST **********"
   productsign --timestamp --sign "$EIDMW_CODESIGN_IDENTITY_INST" $PKG_NAME $PKGSIGNED_NAME
-  hdiutil create -fs "HFS+" -format UDBZ -srcfolder $PKGSIGNED_NAME -volname "${VOL_NAME}" $DMG_NAME
+  hdiutil create -fs "HFS+" -format UDBZ -srcfolder $PKGSIGNED_NAME -volname "${VOL_NAME}" "$DMG_NAME"
 
   echo "********** signing the disk image with $EIDMW_CODESIGN_IDENTITY_APP **********"
-  codesign --timestamp --force -o runtime --sign "$EIDMW_CODESIGN_IDENTITY_APP" -v $DMG_NAME
+  codesign --timestamp --force -o runtime --sign "$EIDMW_CODESIGN_IDENTITY_APP" -v "$DMG_NAME"
 
 
   echo "********** notarize the quick installer **********"
@@ -286,31 +286,31 @@ else
   EIDMW_CODESIGN_IDENTITY_APP="${EIDMW_CODESIGN_IDENTITY_APP:-Developer ID Application}"
 
   echo "********** building beidbuild.pkg **********"
-  pkgbuild --root "$ROOT_DIR" --scripts "$INSTALL_SCRIPTS_DIR" --identifier be.eid.middleware --version $REL_VERSION --install-location / beidbuild.pkg
-  if [ $EIDMW_SIGN_BUILD -eq 1 ];then
+  pkgbuild --root "$ROOT_DIR" --scripts "$INSTALL_SCRIPTS_DIR" --identifier be.eid.middleware --version "$REL_VERSION" --install-location / beidbuild.pkg
+  if [ "$EIDMW_SIGN_BUILD" -eq 1 ];then
     echo "********** signing beidbuild.pkg with $EIDMW_CODESIGN_IDENTITY_APP **********"
     codesign --timestamp --force -o runtime --sign "$EIDMW_CODESIGN_IDENTITY_APP" -v "beidbuild.pkg"
   fi
 
   echo "********** building BEIDToken.pkg **********"
-  pkgbuild --root "$ROOT_BEIDTOKEN_DIR" --scripts "$BEIDTOKEN_INSTALL_SCRIPTS_DIR" --component-plist "$BEIDTOKEN_PLIST_PATH" --identifier be.eid.BEIDtoken.app --version $REL_VERSION --install-location / BEIDToken.pkg
-  if [ $EIDMW_SIGN_BUILD -eq 1 ];then
+  pkgbuild --root "$ROOT_BEIDTOKEN_DIR" --scripts "$BEIDTOKEN_INSTALL_SCRIPTS_DIR" --component-plist "$BEIDTOKEN_PLIST_PATH" --identifier be.eid.BEIDtoken.app --version "$REL_VERSION" --install-location / BEIDToken.pkg
+  if [ "$EIDMW_SIGN_BUILD" -eq 1 ];then
     echo "********** signing BEIDToken.pkg with $EIDMW_CODESIGN_IDENTITY_APP **********"
     codesign --timestamp --force -o runtime --sign "$EIDMW_CODESIGN_IDENTITY_APP" -v "BEIDToken.pkg"
   fi
 
   echo "********** building $PKG_NAME **********"
   productbuild --distribution "$RELEASE_DIR/Distribution_export.txt" --resources "$RESOURCES_DIR" $PKG_NAME
-  if [ $EIDMW_SIGN_BUILD -eq 1 ];then
+  if [ "$EIDMW_SIGN_BUILD" -eq 1 ];then
     echo "********** signing $PKG_NAME with $EIDMW_CODESIGN_IDENTITY_APP **********"
     codesign --timestamp --force -o runtime --sign "$EIDMW_CODESIGN_IDENTITY_APP" -v $PKG_NAME
   fi
 
   echo "********** creating the installer dmg package with Mac Developer **********"
-  hdiutil create -fs "HFS+" -format UDBZ -srcfolder $PKG_NAME -volname "${VOL_NAME}" $DMG_NAME
-  if [ $EIDMW_SIGN_BUILD -eq 1 ];then
+  hdiutil create -fs "HFS+" -format UDBZ -srcfolder $PKG_NAME -volname "${VOL_NAME}" "$DMG_NAME"
+  if [ "$EIDMW_SIGN_BUILD" -eq 1 ];then
     echo "********** signing $PKG_NAME with $EIDMW_CODESIGN_IDENTITY_APP **********"
-    codesign --timestamp --force -o runtime --sign "$EIDMW_CODESIGN_IDENTITY_APP" -v $DMG_NAME
+    codesign --timestamp --force -o runtime --sign "$EIDMW_CODESIGN_IDENTITY_APP" -v "$DMG_NAME"
   fi
 fi
 

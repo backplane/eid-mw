@@ -13,5 +13,5 @@ codesign -s "Developer ID Application" "/Volumes/eID Viewer/eID Viewer.app/Conte
 codesign -s "Developer ID Application" "/Volumes/eID Viewer/eID Viewer.app/Contents/Frameworks/BeidView.framework/Versions/A/Frameworks/libbeidpkcs11.$REL_VERSION.dylib"
 codesign -s "Developer ID Application" "/Volumes/eID Viewer/eID Viewer.app/Contents/Frameworks/BeidView.framework"
 codesign -s "Developer ID Application" "/Volumes/eID Viewer/eID Viewer.app"
-hdiutil detach $DEVNAME
+hdiutil detach "$DEVNAME"
 hdiutil convert tmp-eidviewer.dmg -format UDBZ -o "eID Viewer-$REL_VERSION-signed.dmg"

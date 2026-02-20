@@ -10,11 +10,11 @@ hdiutil attach -quiet Builds.dmg
 
 CURRDIR=$PWD
 
-if [[ `uname -p` = "i386" ]]
+if [[ $(uname -p) = "i386" ]]
 then 
-	cd /Volumes/Builds/Build8P2137/Sources/Tokend-30557
+	cd /Volumes/Builds/Build8P2137/Sources/Tokend-30557 || exit
 else
-	cd /Volumes/Builds/Build8P135/Sources/Tokend-30544
+	cd /Volumes/Builds/Build8P135/Sources/Tokend-30544 || exit
 	sudo gcc_select 3.3
 fi
 
@@ -27,19 +27,19 @@ echo "[Info ] Building BEID.tokend. After some time you should get ** BUILD SUCC
 xcodebuild -configuration Deployment -project Tokend.xcodeproj > output.txt
 grep 'BUILD SUCCEEDED' output.txt
 
-test -d $CURRDIR/../bin/BEID.tokend && rm -rf $CURRDIR/../bin/BEID.tokend
-test -d $CURRDIR/../bin/ || mkdir $CURRDIR/../bin
+test -d "$CURRDIR"/../bin/BEID.tokend && rm -rf "$CURRDIR"/../bin/BEID.tokend
+test -d "$CURRDIR"/../bin/ || mkdir "$CURRDIR"/../bin
 
 test build/Deployment/BEID.tokend/Contents/MacOS/BEID_debug && rm build/Deployment/BEID.tokend/Contents/MacOS/BEID_debug
 
-cp -r build/Deployment/BEID.tokend $CURRDIR/../bin/BEID.tokend
+cp -r build/Deployment/BEID.tokend "$CURRDIR"/../bin/BEID.tokend
 
-cd $CURRDIR
+cd "$CURRDIR" || exit
 
 echo "[Info ] Unmounting Builds.dmg"
 hdiutil detach -quiet /Volumes/Builds
 
-if [[ `uname -p` != "i386" ]]
+if [[ $(uname -p) != "i386" ]]
 then 
 	gcc_select 4.0
 fi

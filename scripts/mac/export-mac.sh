@@ -5,12 +5,12 @@ set -e
 EIDMW_BUILD_CONFIG=Export
 
 # Go to the mac installers directory
-cd $(dirname $0)/../../installers/eid-mw/mac
+cd $(dirname "$0")/../../installers/eid-mw/mac
 
 #-----------------------------------------
 # make sure scripts are executable
 #-----------------------------------------
-CURRDIR=`pwd`
+CURRDIR=$(pwd)
 chmod +x ./create_package.sh
 
 #-----------------------------------------

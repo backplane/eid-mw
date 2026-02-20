@@ -20,23 +20,23 @@ do
 	do
 		for arch in ${DISTARCHS[$dist]}
 		do
-			mkdir -p $REPO_LOC/rpm/$TARGET/${DISTNAMES[$dist]}/$vers/RPMS/$arch
-			if [ -d products/$dist-$vers-$arch ]
+			mkdir -p "$REPO_LOC"/rpm/"$TARGET"/"${DISTNAMES[$dist]}"/"$vers"/RPMS/"$arch"
+			if [ -d products/"$dist"-"$vers"-"$arch" ]
 			then
 				for i in products/$dist-$vers-$arch/*
 				do
-					targetfile=$REPO_LOC/rpm/$TARGET/${DISTNAMES[$dist]}/$vers/RPMS/$arch/$(basename $i)
-					if [ "$(basename $i)" != '*' -a "$(basename $targetfile)" != '*' ]; then
+					targetfile=$REPO_LOC/rpm/$TARGET/${DISTNAMES[$dist]}/$vers/RPMS/$arch/$(basename "$i")
+					if [ "$(basename "$i")" != '*' -a "$(basename "$targetfile")" != '*' ]; then
 						echo "$i => $targetfile"
-						cp $i $targetfile
-						rpmsign --resign --key-id=$GPG_TEST_KEY_ID $targetfile
+						cp "$i" "$targetfile"
+						rpmsign --resign --key-id="$GPG_TEST_KEY_ID" "$targetfile"
 					else
 						echo "ignoring empty directories"
 					fi
 				done
 			fi
 		done
-		createrepo_c $REPO_LOC/rpm/$TARGET/$dist/$vers
-		(cd $REPO_LOC/rpm/$TARGET/$dist/$vers/repodata && gpg --yes --batch --passphrase "" --default-key $GPG_TEST_KEY_ID --no-tty -b --armor repomd.xml)
+		createrepo_c "$REPO_LOC"/rpm/"$TARGET"/"$dist"/"$vers"
+		(cd "$REPO_LOC"/rpm/"$TARGET"/"$dist"/"$vers"/repodata && gpg --yes --batch --passphrase "" --default-key "$GPG_TEST_KEY_ID" --no-tty -b --armor repomd.xml)
 	done
 done

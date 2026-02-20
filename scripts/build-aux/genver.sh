@@ -4,7 +4,7 @@ get_from_dotfile() {
 	if [ -f ".version" ]; then
 		cat .version
 	else
-		if [ $FORCE_VERSION -gt 1 ]; then
+		if [ "$FORCE_VERSION" -gt 1 ]; then
 			>&2 echo "ERROR: Cannot detect version: not a git repository, and no .version file is provided."
 			sleep 10
 			exit 1

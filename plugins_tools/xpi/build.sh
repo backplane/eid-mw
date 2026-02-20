@@ -5,9 +5,9 @@ SRC_DIR=src
 BUILDS_DIR=builds
 BUILD_DIR=_build
 
-cd `dirname $0`
+cd $(dirname "$0") || exit
 
-VERSION=`cat VERSION`
+VERSION=$(cat VERSION)
 XPI_NAME=${EXT_NAME}-${VERSION}.xpi
 CURRENT_NAME=${EXT_NAME}-CURRENT.xpi
 OPTFORCE=0
@@ -28,7 +28,7 @@ done
 echo "starting xpi build.."
 
 # check if build exists
-if [ -e ${BUILDS_DIR}/${XPI_NAME} -a $OPTFORCE -ne 1  ]; then
+if [ -e ${BUILDS_DIR}/"${XPI_NAME}" -a $OPTFORCE -ne 1  ]; then
   echo "A build for version ${VERSION} already exists. Run '$0 -f' to override."
   echo "  To change the version, edit VERSION and belgiumeid/install.rdf"
   exit 1
@@ -48,18 +48,18 @@ cp -r ${SRC_DIR}/* ${BUILD_DIR}
 find ${BUILD_DIR} -path "*.svn" -type d -print0 | xargs -0 /bin/rm -rf
 
 # create XPI
-cd ${BUILD_DIR}
-zip -r $XPI_NAME .
+cd ${BUILD_DIR} || exit
+zip -r "$XPI_NAME" .
 # copy XPI to builds dir
 mkdir ../${BUILDS_DIR} 2> /dev/null
-cp -f $XPI_NAME ../${BUILDS_DIR}
+cp -f "$XPI_NAME" ../${BUILDS_DIR}
 
 # create symbolic link to current dir
-cd ../${BUILDS_DIR}
+cd ../${BUILDS_DIR} || exit
 if [ -e ${CURRENT_NAME} ];then
 	rm ${CURRENT_NAME}
 fi
-ln -s ${XPI_NAME} ${CURRENT_NAME}
+ln -s "${XPI_NAME}" ${CURRENT_NAME}
 
 cd ..
 

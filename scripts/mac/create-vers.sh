@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $(dirname $0)/set_eidmw_version.sh
+source $(dirname "$0")/set_eidmw_version.sh
 
 gitrev=$(git describe --dirty)
 NOW=$(date +%F)
