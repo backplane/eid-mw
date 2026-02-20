@@ -7,7 +7,7 @@ then
 	MAC_BUILD_CONFIG=Release
 fi
 
-pushd $(dirname $0)
+pushd $(dirname "$0")
 
 . set_eidmw_version.sh
 
@@ -25,8 +25,8 @@ pushd "xml"
 make clean-builds
 popd
 popd
-xcodebuild -project "beidmw.xcodeproj" -target "eID Viewer" -configuration $MAC_BUILD_CONFIG clean
-xcodebuild -project "beidmw.xcodeproj" -target "eID Viewer" -configuration $MAC_BUILD_CONFIG
+xcodebuild -project "beidmw.xcodeproj" -target "eID Viewer" -configuration "$MAC_BUILD_CONFIG" clean
+xcodebuild -project "beidmw.xcodeproj" -target "eID Viewer" -configuration "$MAC_BUILD_CONFIG"
 popd
 
 hdiutil create -srcdir release-viewer -volname "eID Viewer" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size 100m "tmp-eidviewer.dmg"
@@ -38,7 +38,7 @@ ln -s /Applications "/Volumes/eID Viewer/ "
 /usr/bin/osascript "../../installers/eid-viewer/mac/setlayout.applescript" "eID Viewer" || true
 for i in $(seq 1 10); do
 	sleep 10
-	if hdiutil eject ${DEVNAME}s1; then
+	if hdiutil eject "${DEVNAME}"s1; then
 		hdiutil convert tmp-eidviewer.dmg -format UDBZ -o "eID Viewer-$REL_VERSION.dmg"
 		exit 0
 	fi

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd $(dirname $0)
+pushd $(dirname "$0") || exit
 
 . set_eidmw_version.sh
 
@@ -22,6 +22,6 @@ cp -a "../../cardcomm/ctktoken/Release/BEIDTokenApp.app" "/Volumes/eID Middlewar
 ln -s /Applications "/Volumes/eID Middleware/ "
 /usr/bin/osascript "../../installers/eid-mw/mac/DD/setlayout.applescript" "eID Middleware" || true
 sleep 4
-hdiutil detach $DEVNAME
+hdiutil detach "$DEVNAME"
 hdiutil convert tmp-eidmiddleware.dmg -format UDBZ -o "eID Middleware-$REL_VERSION.dmg"
-popd
+popd || exit

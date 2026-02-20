@@ -19,7 +19,7 @@ then
         shift
 fi
 mkdir -p /srv/chroot
-if [ -z $ACNG ]
+if [ -z "$ACNG" ]
 then
         ACNG=http://
 fi
@@ -58,9 +58,9 @@ case $DIST in
         ;;
 esac
 
-mmdebstrap --include=debhelper --variant=buildd --arch=$ARCH --skip=output/mknod --components=$components --keyring=$keyring $CODE /srv/chroot $mirror
+mmdebstrap --include=debhelper --variant=buildd --arch="$ARCH" --skip=output/mknod --components=$components --keyring=$keyring "$CODE" /srv/chroot "$mirror"
 sed -i -e "s/my @dpkg_options;/my @dpkg_options = ('-Zxz');/" /srv/chroot/usr/bin/dh_builddeb
-cat <<EOF | tee /etc/schroot/chroot.d/chroot-$fulldist
+cat <<EOF | tee /etc/schroot/chroot.d/chroot-"$fulldist"
 [$CODE-$ARCH-sbuild]
 description=Temporary build chroot
 groups=root,sbuild

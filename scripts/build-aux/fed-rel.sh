@@ -22,17 +22,17 @@ do
 	do
 		for arch in ${DISTARCHS[$dist]}
 		do
-			mkdir -p $REPO_LOC/rpm/$TARGET/${DIST_TARGET_NAMES[$dist]}/$vers/RPMS/$arch
-			if [ -d products/${DIST_SOURCE_NAMES["$dist:$vers"]}-$vers-$arch ]
+			mkdir -p "$REPO_LOC"/rpm/"$TARGET"/"${DIST_TARGET_NAMES[$dist]}"/"$vers"/RPMS/"$arch"
+			if [ -d products/"${DIST_SOURCE_NAMES["$dist:$vers"]}"-"$vers"-"$arch" ]
 			then
 				for i in products/${DIST_SOURCE_NAMES["$dist:$vers"]}-$vers-$arch/*rpm
 				do
-					targetfile=$REPO_LOC/rpm/$TARGET/${DIST_TARGET_NAMES[$dist]}/$vers/RPMS/$arch/$(basename $i)
-					cp $i $targetfile
-					rpmsign --resign --key-id=$GPG_TEST_KEY_ID $targetfile
+					targetfile=$REPO_LOC/rpm/$TARGET/${DIST_TARGET_NAMES[$dist]}/$vers/RPMS/$arch/$(basename "$i")
+					cp "$i" "$targetfile"
+					rpmsign --resign --key-id="$GPG_TEST_KEY_ID" "$targetfile"
 				done
 			fi
 		done
-		createrepo_c $REPO_LOC/rpm/$TARGET/${DIST_TARGET_NAMES[$dist]}/$vers
+		createrepo_c "$REPO_LOC"/rpm/"$TARGET"/"${DIST_TARGET_NAMES[$dist]}"/"$vers"
 	done
 done

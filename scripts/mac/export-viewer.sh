@@ -2,7 +2,7 @@
 
 set -e
 
-pushd $(dirname $0)
+pushd $(dirname "$0")
 
 source set_eidmw_version.sh
 source set_eidmw_username.sh
@@ -41,7 +41,7 @@ cp -a "../../export/eID Viewer.app" "/Volumes/eID Viewer/"
 ln -s /Applications "/Volumes/eID Viewer/ "
 /usr/bin/osascript "../../installers/eid-viewer/mac/setlayout.applescript" "eID Viewer" || true
 sleep 4
-hdiutil detach $DEVNAME
+hdiutil detach "$DEVNAME"
 hdiutil convert tmp-eidviewer.dmg -format UDBZ -o "$EIDVIEWER_DMG"
 
 echo "********** signing the disk image with Developer ID Application **********"

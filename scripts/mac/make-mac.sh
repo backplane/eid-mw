@@ -23,7 +23,7 @@ fi
 echo "EIDMW_BUILD_CONFIG is $EIDMW_BUILD_CONFIG"
 
 # Go to the mac installers directory
-cd $(dirname $0)/../../installers/eid-mw/mac
+cd $(dirname "$0")/../../installers/eid-mw/mac
 
 #-----------------------------------------
 # make sure scripts are executable
@@ -36,13 +36,13 @@ chmod +x ./create_package.sh
 
 pushd ../../..
 echo "cleaning former project..."
-xcodebuild -project beidmw.xcodeproj -target beidpkcs11 -configuration $EIDMW_BUILD_CONFIG clean
-xcodebuild -project beidmw.xcodeproj -target beidpkcs11 -configuration $EIDMW_BUILD_CONFIG
+xcodebuild -project beidmw.xcodeproj -target beidpkcs11 -configuration "$EIDMW_BUILD_CONFIG" clean
+xcodebuild -project beidmw.xcodeproj -target beidpkcs11 -configuration "$EIDMW_BUILD_CONFIG"
 popd
 
 pushd "../../../cardcomm/ctkToken"
-xcodebuild -project "BEIDToken.xcodeproj" -configuration $EIDMW_BUILD_CONFIG clean
-xcodebuild -project "BEIDToken.xcodeproj" -target "BEIDTokenApp" -configuration $EIDMW_BUILD_CONFIG
+xcodebuild -project "BEIDToken.xcodeproj" -configuration "$EIDMW_BUILD_CONFIG" clean
+xcodebuild -project "BEIDToken.xcodeproj" -target "BEIDTokenApp" -configuration "$EIDMW_BUILD_CONFIG"
 popd
 
 #-----------------------------------------
